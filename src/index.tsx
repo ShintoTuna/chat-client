@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import { ChatContextProvider } from './ChatContext';
+import App from './components/App';
+import { ChatContextProvider } from './components/ChatContext';
 
 ReactDOM.render(
     <ChatContextProvider>

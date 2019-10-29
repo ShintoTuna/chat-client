@@ -1,33 +1,29 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { ChatContext } from './ChatContext';
 import Message from './Message';
+import InputWithSubmit from './InputWithSubmit';
 
 const Chat: React.FC = () => {
-    const [message, setMessage] = useState('');
-    const { messages, sendMessage, username } = useContext(ChatContext);
+    const { messages, sendMessage, username, disconnect } = useContext(ChatContext);
 
-    const submit = () => {
+    const submit = (message: string) => {
         if (message.length > 0 && username) {
             sendMessage({ message, username });
-            setMessage('');
         }
     };
 
     return (
         <div className="chat">
+            <button className="close" onClick={disconnect}>
+                ×
+            </button>
             <div className="messages">
                 {messages.map((m, i) => (
                     <Message message={m} key={i} />
                 ))}
             </div>
             <div className="controls">
-                <input
-                    type="text"
-                    value={message}
-                    onChange={({ target }) => setMessage(target.value)}
-                    onKeyDown={({ keyCode }) => keyCode === 13 && submit()}
-                />
-                <button onClick={submit}>Send</button>
+                <InputWithSubmit submit={submit} placeholder="Type to chat" />
             </div>
         </div>
     );

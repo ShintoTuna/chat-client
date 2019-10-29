@@ -1,11 +1,9 @@
-import React, { createContext, useState, useEffect, FC } from 'react';
-import { Message } from './types';
+import React, { createContext, useState, FC } from 'react';
+import { Message } from '../types';
 
 function useChatState() {
     const [messages, updateMessages] = useState<Message[]>([]);
     const [username, setUsername] = useState<string>();
-
-    useEffect(() => {}, []);
 
     function sendMessage(message: Message) {
         updateMessages([...messages, message]);
@@ -21,11 +19,17 @@ function useChatState() {
         updateMessages([...messages, newMessage]);
     }
 
+    function disconnect() {
+        setUsername('');
+        updateMessages([]);
+    }
+
     return {
         messages,
         sendMessage,
         username,
         saveUsername,
+        disconnect,
     };
 }
 
