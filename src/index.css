@@ -2,6 +2,7 @@
   --font-color: #F2F2F2;
   --input-bg-color: #555459;
   --diluted-font-color: #706F73;
+  --darkest: #232226;
 }
 
 body {
@@ -31,6 +32,30 @@ html {
   height: 100%;
   min-height: 100vh;
   padding: 10px;
+}
+
+.users {
+  padding: 20px 0 12px;
+  border-top: 1px solid var(--input-bg-color);
+}
+
+.users h4 {
+  color: var(--diluted-font-color);
+  margin: 0;
+}
+
+.users ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.users li {
+  display: inline-block;
+  background-color:var(--darkest);
+  padding: 4px 8px;
+  margin: 8px 4px;
+  border-radius: 3px;
 }
 
 .close {

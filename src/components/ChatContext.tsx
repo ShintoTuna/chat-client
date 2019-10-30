@@ -1,10 +1,11 @@
 import React, { createContext, useState, FC } from 'react';
 import { Message } from '../types';
-import { subscribeToMessages, emitMessage } from '../socket';
+import { subscribeToChat, emitMessage, disconnect as disconnectFormSocket } from '../socket';
 
 function useChatState() {
     const [messages, updateMessages] = useState<Message[]>([]);
     const [username, setUsername] = useState<string>();
+    const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
     function addMessage(message: Message) {
         updateMessages((state) => [...state, message]);
@@ -16,7 +17,7 @@ function useChatState() {
 
     async function saveUsername(username: string) {
         try {
-            await subscribeToMessages(username, addMessage);
+            await subscribeToChat(username, addMessage, setOnlineUsers);
             setUsername(username);
 
             return true;
@@ -28,12 +29,14 @@ function useChatState() {
     function disconnect() {
         setUsername('');
         updateMessages([]);
+        disconnectFormSocket();
     }
 
     return {
-        messages,
-        sendMessage,
         username,
+        messages,
+        onlineUsers,
+        sendMessage,
         saveUsername,
         disconnect,
     };

@@ -2,33 +2,40 @@ import io from 'socket.io-client';
 import { WS_URL } from './constants';
 import { Message } from './types';
 
-const socket = io.connect(WS_URL);
+const connect = () => io.connect(WS_URL, { reconnection: false });
 
-interface RegistrationSuccessResponse {
-    success: true;
-    users: string[];
+let socket = connect();
+
+interface RegistrationResponse {
+    success: boolean;
 }
 
-interface RegistrationFailResponse {
-    success: false;
-    reason: string;
-}
+export const subscribeToChat = (
+    username: string,
+    addMessage: (message: Message) => void,
+    updateUsers: (users: string[]) => void,
+) => {
+    if (!socket.connected) {
+        socket = connect();
+    }
 
-type RegistrationResponse = RegistrationFailResponse | RegistrationSuccessResponse;
-
-export const subscribeToMessages = (username: string, cb: (message: Message) => void) => {
     socket.emit('register', username);
 
-    return new Promise((resolve, reject) => {
+    return new Promise<string[]>((resolve, reject) => {
         socket.once('registration_result', (res: RegistrationResponse) => {
             if (res.success) {
+                socket.on('new_message', addMessage); // TODO: guard
+                socket.on('online_users_update', updateUsers); // TODO: guard
                 resolve();
-                socket.on('new_message', cb); // TODO guard
             } else {
-                reject(res.reason);
+                reject();
             }
         });
     });
+};
+
+export const disconnect = () => {
+    socket.disconnect();
 };
 
 export const emitMessage = (message: Message) => {
