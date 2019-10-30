@@ -1,22 +1,28 @@
 import React, { createContext, useState, FC } from 'react';
 import { Message } from '../types';
+import { subscribeToMessages, emitMessage } from '../socket';
 
 function useChatState() {
     const [messages, updateMessages] = useState<Message[]>([]);
     const [username, setUsername] = useState<string>();
 
-    function sendMessage(message: Message) {
-        updateMessages([...messages, message]);
+    function addMessage(message: Message) {
+        updateMessages((state) => [...state, message]);
     }
 
-    function saveUsername(username: string) {
-        const newMessage = {
-            message: `Hi ${username}, welcome to the chat!`,
-            username: 'System',
-        };
+    const sendMessage = (message: Message) => {
+        emitMessage(message);
+    };
 
-        setUsername(username);
-        updateMessages([...messages, newMessage]);
+    async function saveUsername(username: string) {
+        try {
+            await subscribeToMessages(username, addMessage);
+            setUsername(username);
+
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
 
     function disconnect() {

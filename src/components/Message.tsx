@@ -16,7 +16,7 @@ const Message: FC<Props> = ({ message: { message, username } }) => {
             </div>
             <div className="body">
                 <div className="name">{username}</div>
-                <div className="message">{message}</div>
+                <div className="message" dangerouslySetInnerHTML={{ __html: message }} />
             </div>
         </div>
     );
