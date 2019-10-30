@@ -7,3 +7,12 @@ export const toHue = (str: string) => {
     }
     return hash % 360;
 };
+
+export const escapeHTMLEncode = (str: string) => {
+    const div = document.createElement('div');
+    const text = document.createTextNode(str);
+
+    div.appendChild(text);
+
+    return div.innerHTML;
+};

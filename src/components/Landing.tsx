@@ -4,11 +4,11 @@ import InputWithSubmit from './InputWithSubmit';
 
 const Landing: FC = () => {
     const [error, setError] = useState('');
-    const { saveUsername } = useContext(ChatContext);
+    const { register, connected } = useContext(ChatContext);
 
     const submit = async (username: string) => {
         if (username.length > 0) {
-            const success = await saveUsername(username);
+            const { success } = await register(username);
 
             if (!success) {
                 setError(`Username ${username} already in use`);
@@ -18,7 +18,8 @@ const Landing: FC = () => {
 
     return (
         <div className="landing">
-            <InputWithSubmit submit={submit} placeholder="Whats your name?" />
+            {!connected && <h4>No connection</h4>}
+            <InputWithSubmit disabled={!connected} submit={submit} placeholder="Whats your name?" />
             {error.length > 0 && <span className="error">{error}</span>}
         </div>
     );

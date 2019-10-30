@@ -1,43 +1,57 @@
-import React, { createContext, useState, FC } from 'react';
+import React, { createContext, useState, FC, useEffect } from 'react';
 import { Message } from '../types';
-import { subscribeToChat, emitMessage, disconnect as disconnectFormSocket } from '../socket';
+import * as socket from '../socket';
 
 function useChatState() {
     const [messages, updateMessages] = useState<Message[]>([]);
     const [username, setUsername] = useState<string>();
     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+    const [connected, setConnected] = useState(true);
+
+    useEffect(() => {
+        socket.subscribeToConnectionSuccess(() => setConnected(true));
+        socket.subscribeToConnectionErrors(() => setConnected(false));
+        socket.subscribeToDisconnect(() => clearChat());
+    }, []);
 
     function addMessage(message: Message) {
         updateMessages((state) => [...state, message]);
     }
 
     const sendMessage = (message: Message) => {
-        emitMessage(message);
+        socket.sendMessage(message);
     };
 
-    async function saveUsername(username: string) {
+    async function register(username: string) {
         try {
-            await subscribeToChat(username, addMessage, setOnlineUsers);
-            setUsername(username);
+            await socket.subscribeToChat(username, addMessage, setOnlineUsers);
 
-            return true;
+            setUsername(username);
+            setConnected(true);
+
+            return { success: true };
         } catch (error) {
-            return false;
+            return { success: false, error };
         }
     }
 
     function disconnect() {
+        clearChat();
+        socket.disconnect();
+    }
+
+    function clearChat() {
         setUsername('');
         updateMessages([]);
-        disconnectFormSocket();
     }
 
     return {
+        connected,
         username,
         messages,
         onlineUsers,
         sendMessage,
-        saveUsername,
+        register,
         disconnect,
     };
 }

@@ -98,6 +98,10 @@ html {
   min-height: 100vh;
 }
 
+.landing h4 {
+  color: var(--diluted-font-color);
+}
+
 .error {
   display: block;
   margin-top: 10px;
@@ -166,4 +170,9 @@ html {
   font-size: 20px;
   padding: 15px;
   color: var(--diluted-font-color);
+  cursor: pointer;
+}
+
+.input-field:disabled, .input-submit:disabled {
+  cursor: not-allowed;
 }

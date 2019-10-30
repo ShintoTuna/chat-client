@@ -2,14 +2,14 @@ import React, { useContext, FC } from 'react';
 import { ChatContext } from './ChatContext';
 import Message from './Message';
 import InputWithSubmit from './InputWithSubmit';
-import { toHue } from '../utils';
+import { toHue, escapeHTMLEncode } from '../utils';
 
 const Chat: FC = () => {
     const { messages, sendMessage, username, disconnect, onlineUsers } = useContext(ChatContext);
 
     const submit = (message: string) => {
         if (message.length > 0 && username) {
-            sendMessage({ message, username });
+            sendMessage({ message: escapeHTMLEncode(message), username });
         }
     };
 
@@ -39,7 +39,7 @@ const Chat: FC = () => {
 };
 
 const User: FC<{ user: string }> = ({ user }) => {
-    const color = `hsl(${toHue(user)}, 30%, 80%)`;
+    const color = `hsl(${toHue(user)}, 50%, 80%)`;
 
     return <li style={{ color }}>{user}</li>;
 };
