@@ -1,12 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './components/App';
 import { ChatContextProvider } from './components/ChatContext';
+import { ThemeProvider } from 'styled-components';
+import theme from './theme';
 
 ReactDOM.render(
-    <ChatContextProvider>
-        <App />
-    </ChatContextProvider>,
+    <ThemeProvider theme={theme}>
+        <ChatContextProvider>
+            <App />
+        </ChatContextProvider>
+    </ThemeProvider>,
     document.getElementById('root'),
 );

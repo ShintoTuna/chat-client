@@ -1,4 +1,5 @@
 import React, { FC, useContext, useState } from 'react';
+import styled from 'styled-components';
 import { ChatContext } from './ChatContext';
 import InputWithSubmit from './InputWithSubmit';
 
@@ -17,12 +18,33 @@ const Landing: FC = () => {
     };
 
     return (
-        <div className="landing">
-            {!connected && <h4>No connection</h4>}
+        <Container>
+            {!connected && <NoConnection>No connection</NoConnection>}
             <InputWithSubmit disabled={!connected} submit={submit} placeholder="Whats your name?" />
-            {error.length > 0 && <span className="error">{error}</span>}
-        </div>
+            {error.length > 0 && <Error>{error}</Error>}
+        </Container>
     );
 };
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 100vh;
+`;
+
+const Error = styled.span`
+    display: block;
+    margin-top: 10px;
+    font-style: italic;
+    font-size: 14;
+    color: palevioletred;
+`;
+
+const NoConnection = styled.h4`
+    color: ${({ theme }) => theme.colors.darkFont};
+`;
 
 export default Landing;
