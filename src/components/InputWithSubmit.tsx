@@ -5,9 +5,10 @@ interface Props {
     submit: (str: string) => void;
     placeholder: string;
     disabled?: boolean;
+    onChange?: (val?: string) => void;
 }
 
-const InputWithSubmit: FC<Props> = ({ submit, placeholder, disabled = false }) => {
+const InputWithSubmit: FC<Props> = ({ submit, placeholder, disabled = false, onChange }) => {
     const [value, setValue] = useState('');
 
     const submitValue = () => {
@@ -17,13 +18,21 @@ const InputWithSubmit: FC<Props> = ({ submit, placeholder, disabled = false }) =
         }
     };
 
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setValue(event.target.value);
+
+        if (onChange) {
+            onChange(event.target.value);
+        }
+    };
+
     return (
         <InputContainer>
             <Input
                 disabled={disabled}
                 placeholder={placeholder}
                 value={value}
-                onChange={({ target }) => setValue(target.value)}
+                onChange={handleChange}
                 onKeyDown={({ keyCode }) => keyCode === 13 && submitValue()}
             />
             <Button disabled={disabled} onClick={submitValue} />

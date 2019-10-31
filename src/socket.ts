@@ -8,38 +8,51 @@ interface RegistrationResponse {
     success: boolean;
 }
 
+enum Event {
+    newMessage = 'new_message',
+    onlineUsersUpdate = 'online_users_update',
+    registrationResult = 'registration_result',
+    register = 'register',
+    disconnect = 'disconnect',
+    disconnectIdle = 'disconnect_idle',
+    connectionError = 'connect_error',
+    connect = 'connect',
+}
+
 const unsubscribe = () => {
-    socket.off('new_message');
-    socket.off('online_users_update');
+    socket.off(Event.newMessage);
+    socket.off(Event.onlineUsersUpdate);
 };
 
 export const subscribeToChat = (
     username: string,
     addMessage: (message: Message) => void,
     updateUsers: (users: string[]) => void,
+    handleIdleDisconnect: () => void,
 ) => {
     if (!socket.connected) {
         socket.connect();
     }
 
-    socket.emit('register', username);
+    socket.emit(Event.register, username);
 
     return new Promise<string[]>((resolve, reject) => {
-        socket.once('registration_result', (res: RegistrationResponse) => {
+        socket.once(Event.registrationResult, (res: RegistrationResponse) => {
             if (res.success) {
-                socket.on('new_message', addMessage); // TODO: guard
-                socket.on('online_users_update', updateUsers); // TODO: guard
+                socket.on(Event.newMessage, addMessage);
+                socket.on(Event.onlineUsersUpdate, updateUsers);
+                socket.on(Event.disconnectIdle, handleIdleDisconnect);
                 resolve();
             } else {
                 socket.disconnect();
-                reject('username_taken');
+                reject();
             }
         });
     });
 };
 
 export const sendMessage = (message: Message) => {
-    socket.emit('new_message', message);
+    socket.emit(Event.newMessage, message);
 };
 
 export const disconnect = () => {
@@ -48,16 +61,16 @@ export const disconnect = () => {
 };
 
 export const subscribeToDisconnect = (cb: () => void) => {
-    socket.on('disconnect', () => {
+    socket.on(Event.disconnect, () => {
         unsubscribe();
         cb();
     });
 };
 
 export const subscribeToConnectionErrors = (cb: () => void) => {
-    socket.on('connect_error', cb);
+    socket.on(Event.connectionError, cb);
 };
 
 export const subscribeToConnectionSuccess = (cb: () => void) => {
-    socket.on('connect', cb);
+    socket.on(Event.connect, cb);
 };

@@ -7,12 +7,16 @@ interface Props {
     message: MessageType;
 }
 
-const Message: FC<Props> = ({ message: { message, username, error } }) => (
+const Message: FC<Props> = ({ message: { message, username, error, system } }) => (
     <Container>
         <Avatar name={username}>{username.slice(0, 2).toUpperCase()}</Avatar>
         <Body>
             <Name>{username}</Name>
-            <MessageText error={!!error} dangerouslySetInnerHTML={{ __html: message }} />
+            {!!system ? (
+                <SystemMessageText error={!!error} dangerouslySetInnerHTML={{ __html: message }} />
+            ) : (
+                <MessageText dangerouslySetInnerHTML={{ __html: message }} />
+            )}
         </Body>
     </Container>
 );
@@ -46,11 +50,13 @@ const Name = styled.div`
     color: ${({ theme }) => theme.colors.darkFont};
 `;
 
-const MessageText = styled.div<{ error: boolean }>`
+const MessageText = styled.div`
     color: ${({ theme }) => theme.colors.lightFont};
-    i {
-        color: ${({ theme, error }) => (error ? 'palevioletred' : theme.colors.darkFont)};
-    }
+`;
+
+const SystemMessageText = styled.div<{ error: boolean }>`
+    font-style: italic;
+    color: ${({ theme, error }) => (error ? 'palevioletred' : theme.colors.darkFont)};
 `;
 
 export default Message;
