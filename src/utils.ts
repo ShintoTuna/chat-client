@@ -16,3 +16,8 @@ export const escapeHTMLEncode = (str: string) => {
 
     return div.innerHTML;
 };
+
+export const getRandomId = () =>
+    Math.random()
+        .toString(36)
+        .substring(2, 10);

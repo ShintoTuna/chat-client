@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ChatContext } from './ChatContext';
 import Message from './Message';
 import InputWithSubmit from './InputWithSubmit';
-import { escapeHTMLEncode } from '../utils';
+import { escapeHTMLEncode, getRandomId } from '../utils';
 import Users from './Users';
 
 const Chat: FC = () => {
@@ -14,7 +14,7 @@ const Chat: FC = () => {
         const el = containerRef.current;
 
         if (el) {
-            // Push event to the end of the que so it will trigger after rerender
+            // Push event to the end of the que so it will trigger after re–render
             setTimeout(() => {
                 el.scrollTo(0, el.scrollHeight);
             }, 0);
@@ -36,8 +36,8 @@ const Chat: FC = () => {
             <CloseButton onClick={disconnect} />
             <Users users={onlineUsers} />
             <Messages ref={containerRef}>
-                {messages.map((m, i) => (
-                    <Message message={m} key={i} />
+                {messages.map((m) => (
+                    <Message message={m} key={getRandomId()} />
                 ))}
             </Messages>
             <Controls>

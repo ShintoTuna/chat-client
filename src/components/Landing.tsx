@@ -6,6 +6,8 @@ import InputWithSubmit from './InputWithSubmit';
 const Landing: FC = () => {
     const { register, connected, error, setError } = useContext(ChatContext);
 
+    const handleChange = () => setError(null);
+
     const submit = async (username: string) => {
         if (username.length > 0) {
             const { success } = await register(username);
@@ -19,7 +21,7 @@ const Landing: FC = () => {
     return (
         <Container>
             <InputWithSubmit
-                onChange={() => setError(null)}
+                onChange={handleChange}
                 disabled={!connected}
                 submit={submit}
                 placeholder="Whats your name?"

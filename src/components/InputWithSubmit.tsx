@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, ChangeEvent, KeyboardEvent } from 'react';
 import styled, { css } from 'styled-components';
 
 interface Props {
@@ -18,13 +18,15 @@ const InputWithSubmit: FC<Props> = ({ submit, placeholder, disabled = false, onC
         }
     };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
 
         if (onChange) {
             onChange(event.target.value);
         }
     };
+
+    const handleKeyDown = ({ keyCode }: KeyboardEvent<HTMLInputElement>) => keyCode === 13 && submitValue();
 
     return (
         <InputContainer>
@@ -33,7 +35,7 @@ const InputWithSubmit: FC<Props> = ({ submit, placeholder, disabled = false, onC
                 placeholder={placeholder}
                 value={value}
                 onChange={handleChange}
-                onKeyDown={({ keyCode }) => keyCode === 13 && submitValue()}
+                onKeyDown={handleKeyDown}
             />
             <Button disabled={disabled} onClick={submitValue} />
         </InputContainer>

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { toHue } from '../utils';
+import { toHue, getRandomId } from '../utils';
 
 interface Props {
     users: string[];
@@ -10,8 +10,8 @@ const Users: FC<Props> = ({ users }) => (
     <UsersContainer>
         <Title>Online</Title>
         <UsersBlock>
-            {users.map((user, i) => (
-                <User key={i} name={user}>
+            {users.map((user) => (
+                <User key={getRandomId()} name={user}>
                     {user}
                 </User>
             ))}
